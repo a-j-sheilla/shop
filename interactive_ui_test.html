@@ -320,6 +320,127 @@
             </div>
         </div>
 
+        <!-- Edit Product Section (Hidden initially) -->
+        <div id="edit-product-section" class="container" style="display: none; padding: 2rem;">
+            <h1 class="title">Edit Product</h1>
+            <div class="columns">
+                <div class="column is-8">
+                    <form id="edit-product-form">
+                        <input type="hidden" id="edit-product-id">
+
+                        <div class="columns">
+                            <div class="field column is-9">
+                                <label class="label">Title</label>
+                                <div class="control">
+                                    <input class="input" type="text" id="edit-product-title" placeholder="Product title" required>
+                                </div>
+                            </div>
+                            <div class="field column">
+                                <label class="label">Price</label>
+                                <div class="control">
+                                    <input class="input" type="number" id="edit-product-price" placeholder="0.00" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Model</label>
+                            <div class="control">
+                                <input class="input" type="text" id="edit-product-model" placeholder="Product model" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Description</label>
+                            <div class="control">
+                                <textarea class="textarea" id="edit-product-description" placeholder="Describe your product" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="columns">
+                            <div class="field column is-4">
+                                <label class="label">Brand</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="edit-product-brand" required>
+                                            <option value="">Select brand</option>
+                                            <option value="Ferrari">Ferrari</option>
+                                            <option value="Opel">Opel</option>
+                                            <option value="Lenovo">Lenovo</option>
+                                            <option value="Fossil">Fossil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field column is-4">
+                                <label class="label">Condition</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="edit-product-condition" required>
+                                            <option value="">Select condition</option>
+                                            <option value="New">New</option>
+                                            <option value="Excellent">Excellent</option>
+                                            <option value="Mint">Mint</option>
+                                            <option value="Used">Used</option>
+                                            <option value="Fair">Fair</option>
+                                            <option value="Poor">Poor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field column is-4">
+                                <label class="label">Finish</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="edit-product-finish" required>
+                                            <option value="">Select finish</option>
+                                            <option value="Black">Black</option>
+                                            <option value="White">White</option>
+                                            <option value="Navy">Navy</option>
+                                            <option value="Blue">Blue</option>
+                                            <option value="Red">Red</option>
+                                            <option value="Clear">Clear</option>
+                                            <option value="Satin">Satin</option>
+                                            <option value="Yellow">Yellow</option>
+                                            <option value="Seafoam">Seafoam</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button type="submit" class="button is-success">Update Product</button>
+                            </div>
+                            <div class="control">
+                                <button type="button" class="button is-light" onclick="cancelEditProduct()">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="column is-4">
+                    <div class="box">
+                        <h2 class="subtitle">Product Preview</h2>
+                        <div id="edit-product-preview">
+                            <div class="product-thumb">
+                                <div class="product-image" id="edit-preview-image">
+                                    Product Preview
+                                </div>
+                            </div>
+                            <div class="pa3">
+                                <h3 class="title is-5" id="edit-preview-title">Product Title</h3>
+                                <p class="has-text-grey">Sold by: <span id="edit-preview-seller">Demo User</span></p>
+                                <p class="title is-4 has-text-right">$<span id="edit-preview-price">0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Checkout Section (Hidden initially) -->
         <div id="checkout-section" class="container" style="display: none; padding: 2rem;">
             <h1 class="title">Checkout</h1>
@@ -510,6 +631,7 @@
             document.getElementById('cart-section').style.display = 'none';
             document.getElementById('sell-section').style.display = 'none';
             document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('edit-product-section').style.display = 'none';
             document.getElementById('checkout-section').style.display = 'none';
         }
 
@@ -749,8 +871,7 @@
         function editProduct(productId) {
             const product = products.find(p => p.id === productId);
             if (product && product.canEdit) {
-                showFlash(`Edit functionality for "${product.title}" would open the edit form here`, 'info');
-                // In a real app, this would open an edit form or redirect to edit page
+                openEditProductForm(product);
             } else {
                 showFlash('You can only edit your own products.', 'danger');
             }
@@ -829,8 +950,7 @@
         function editProductFromProfile(productId) {
             const product = products.find(p => p.id === productId);
             if (product && product.canEdit) {
-                showFlash(`Edit functionality for "${product.title}" would open the edit form here`, 'info');
-                // In a real app, this would open an edit form or redirect to edit page
+                openEditProductForm(product);
             } else {
                 showFlash('You can only edit your own products.', 'danger');
             }
@@ -935,6 +1055,67 @@
             dropdown.classList.toggle('is-active');
         }
 
+        function openEditProductForm(product) {
+            hideAllSections();
+            document.getElementById('edit-product-section').style.display = 'block';
+
+            // Populate form with product data
+            document.getElementById('edit-product-id').value = product.id;
+            document.getElementById('edit-product-title').value = product.title;
+            document.getElementById('edit-product-price').value = product.price;
+            document.getElementById('edit-product-model').value = product.model;
+            document.getElementById('edit-product-description').value = product.description || '';
+            document.getElementById('edit-product-brand').value = product.brand;
+            document.getElementById('edit-product-condition').value = product.condition;
+            document.getElementById('edit-product-finish').value = product.finish || '';
+
+            // Update preview
+            updateEditPreview();
+
+            showFlash(`Editing "${product.title}"`, 'info');
+        }
+
+        function updateEditPreview() {
+            const title = document.getElementById('edit-product-title').value || 'Product Title';
+            const price = document.getElementById('edit-product-price').value || '0';
+            const imageClass = products.find(p => p.id == document.getElementById('edit-product-id').value)?.imageClass || 'ferrari';
+
+            document.getElementById('edit-preview-title').textContent = title;
+            document.getElementById('edit-preview-price').textContent = parseFloat(price).toLocaleString();
+            document.getElementById('edit-preview-image').className = `product-image ${imageClass}`;
+            document.getElementById('edit-preview-image').textContent = title;
+        }
+
+        function cancelEditProduct() {
+            showProfile();
+        }
+
+        function updateProduct(event) {
+            event.preventDefault();
+
+            const productId = parseInt(document.getElementById('edit-product-id').value);
+            const product = products.find(p => p.id === productId);
+
+            if (!product || !product.canEdit) {
+                showFlash('Product not found or you do not have permission to edit it.', 'danger');
+                return;
+            }
+
+            // Update product data
+            product.title = document.getElementById('edit-product-title').value;
+            product.price = parseFloat(document.getElementById('edit-product-price').value);
+            product.model = document.getElementById('edit-product-model').value;
+            product.description = document.getElementById('edit-product-description').value;
+            product.brand = document.getElementById('edit-product-brand').value;
+            product.condition = document.getElementById('edit-product-condition').value;
+            product.finish = document.getElementById('edit-product-finish').value;
+
+            showFlash(`Product "${product.title}" updated successfully!`, 'success');
+
+            // Go back to profile
+            showProfile();
+        }
+
         function completeOrder(event) {
             event.preventDefault();
 
@@ -964,7 +1145,13 @@
 
         // Add form submission handlers
         document.getElementById('product-form').addEventListener('submit', createProduct);
+        document.getElementById('edit-product-form').addEventListener('submit', updateProduct);
         document.getElementById('checkout-form').addEventListener('submit', completeOrder);
+
+        // Add real-time preview for edit form
+        ['edit-product-title', 'edit-product-price'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateEditPreview);
+        });
 
         // Add click outside handler for dropdown
         document.addEventListener('click', function(event) {
