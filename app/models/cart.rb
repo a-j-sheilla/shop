@@ -6,8 +6,9 @@ class Cart < ApplicationRecord
     current_item = cart_items.find_by(product: product)
     if current_item
       current_item.quantity += 1
+      current_item.save
     else
-      current_item = cart_items.build(product: product)
+      current_item = cart_items.build(product: product, quantity: 1)
     end
     current_item
   end
