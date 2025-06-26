@@ -25,7 +25,7 @@
     <% end %>
      <nav class="navbar is-warning" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <%= link_to root_path, class:"navbar-item" do %>
+        <%= link_to (user_signed_in? ? shop_path : root_path), class:"navbar-item" do %>
           <h1 class="title is-5">Shop</h1>
         <% end  %>
       <div class="navbar-burger burger" data-target="navbar">
@@ -59,7 +59,7 @@
                 <%= link_to 'Account', edit_user_registration_path, class: "navbar-link" %>
                 <div class="navbar-dropdown is-right">
                   <%= link_to current_user.name, edit_user_registration_path, class:"navbar-item" %>
-                  <%= link_to "Log Out", destroy_user_session_path, method: :delete, class:"navbar-item" %>
+                  <%= link_to "Log Out", destroy_user_session_path, method: :delete, class:"navbar-item", data: { turbo_method: :delete } %>
                 </div>
               </div>
             <% else %>
