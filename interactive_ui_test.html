@@ -151,12 +151,67 @@
             <div class="buttons is-right" style="margin-top: 2rem;">
                 <button class="button is-light" onclick="showShop()">Continue Shopping</button>
                 <button class="button is-warning" onclick="emptyCart()">Empty Cart</button>
-                <button class="button is-primary is-large">
+                <button class="button is-primary is-large" onclick="showCheckout()">
                     <span class="icon">
                         <i class="fas fa-credit-card"></i>
                     </span>
                     <span>Checkout</span>
                 </button>
+            </div>
+        </div>
+
+        <!-- Profile Section (Hidden initially) -->
+        <div id="profile-section" class="container" style="display: none; padding: 2rem;">
+            <h1 class="title">My Profile</h1>
+            <div class="columns">
+                <div class="column is-8">
+                    <div class="box">
+                        <h2 class="subtitle">Account Information</h2>
+                        <div class="field">
+                            <label class="label">Name</label>
+                            <div class="control">
+                                <input class="input" type="text" value="Demo User" readonly>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Email</label>
+                            <div class="control">
+                                <input class="input" type="email" value="demo@example.com" readonly>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label">Member Since</label>
+                            <div class="control">
+                                <input class="input" type="text" value="January 2024" readonly>
+                            </div>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button is-primary">Edit Profile</button>
+                            </div>
+                            <div class="control">
+                                <button class="button is-light" onclick="showShop()">Back to Shop</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box">
+                        <h2 class="subtitle">My Products</h2>
+                        <div id="my-products-list">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="box">
+                        <h2 class="subtitle">Statistics</h2>
+                        <div class="content">
+                            <p><strong>Products Listed:</strong> <span id="products-count">0</span></p>
+                            <p><strong>Total Sales:</strong> $<span id="total-sales">0</span></p>
+                            <p><strong>Items in Cart:</strong> <span id="profile-cart-count">0</span></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -261,6 +316,157 @@
                 </div>
             </div>
         </div>
+
+        <!-- Checkout Section (Hidden initially) -->
+        <div id="checkout-section" class="container" style="display: none; padding: 2rem;">
+            <h1 class="title">Checkout</h1>
+            <div class="columns">
+                <div class="column is-8">
+                    <div class="box">
+                        <h2 class="subtitle">Shipping Information</h2>
+                        <form id="checkout-form">
+                            <div class="columns">
+                                <div class="field column is-6">
+                                    <label class="label">First Name</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="First name" required>
+                                    </div>
+                                </div>
+                                <div class="field column is-6">
+                                    <label class="label">Last Name</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="Last name" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label">Address</label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="Street address" required>
+                                </div>
+                            </div>
+
+                            <div class="columns">
+                                <div class="field column is-6">
+                                    <label class="label">City</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="City" required>
+                                    </div>
+                                </div>
+                                <div class="field column is-3">
+                                    <label class="label">State</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="State" required>
+                                    </div>
+                                </div>
+                                <div class="field column is-3">
+                                    <label class="label">ZIP Code</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="ZIP" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2 class="subtitle" style="margin-top: 2rem;">Payment Information</h2>
+
+                            <div class="field">
+                                <label class="label">Card Number</label>
+                                <div class="control">
+                                    <input class="input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                </div>
+                            </div>
+
+                            <div class="columns">
+                                <div class="field column is-6">
+                                    <label class="label">Expiry Date</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="MM/YY" maxlength="5" required>
+                                    </div>
+                                </div>
+                                <div class="field column is-6">
+                                    <label class="label">CVV</label>
+                                    <div class="control">
+                                        <input class="input" type="text" placeholder="123" maxlength="4" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field is-grouped">
+                                <div class="control">
+                                    <button type="submit" class="button is-success is-large">
+                                        <span class="icon">
+                                            <i class="fas fa-credit-card"></i>
+                                        </span>
+                                        <span>Complete Order</span>
+                                    </button>
+                                </div>
+                                <div class="control">
+                                    <button type="button" class="button is-light" onclick="showCart()">Back to Cart</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="column is-4">
+                    <div class="box">
+                        <h2 class="subtitle">Order Summary</h2>
+                        <div id="checkout-items"></div>
+                        <hr>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <strong>Subtotal:</strong>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <strong>$<span id="checkout-subtotal">0.00</span></strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    Shipping:
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    $<span id="checkout-shipping">9.99</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    Tax:
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    $<span id="checkout-tax">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <strong>Total:</strong>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <strong class="has-text-primary">$<span id="checkout-total">0.00</span></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -295,27 +501,47 @@
             showFlash('You have been logged out.', 'info');
         }
 
-        function showShop() {
-            document.getElementById('hero-section').style.display = 'block';
-            document.getElementById('products-section').style.display = 'grid';
+        function hideAllSections() {
+            document.getElementById('hero-section').style.display = 'none';
+            document.getElementById('products-section').style.display = 'none';
             document.getElementById('cart-section').style.display = 'none';
             document.getElementById('sell-section').style.display = 'none';
+            document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('checkout-section').style.display = 'none';
+        }
+
+        function showShop() {
+            hideAllSections();
+            document.getElementById('hero-section').style.display = 'block';
+            document.getElementById('products-section').style.display = 'grid';
             loadProducts();
         }
 
         function showCart() {
-            document.getElementById('hero-section').style.display = 'none';
-            document.getElementById('products-section').style.display = 'none';
+            hideAllSections();
             document.getElementById('cart-section').style.display = 'block';
-            document.getElementById('sell-section').style.display = 'none';
             displayCart();
         }
 
         function showSell() {
-            document.getElementById('hero-section').style.display = 'none';
-            document.getElementById('products-section').style.display = 'none';
-            document.getElementById('cart-section').style.display = 'none';
+            hideAllSections();
             document.getElementById('sell-section').style.display = 'block';
+        }
+
+        function showProfile() {
+            hideAllSections();
+            document.getElementById('profile-section').style.display = 'block';
+            loadProfile();
+        }
+
+        function showCheckout() {
+            if (cart.length === 0) {
+                showFlash('Your cart is empty. Add some items before checkout.', 'warning');
+                return;
+            }
+            hideAllSections();
+            document.getElementById('checkout-section').style.display = 'block';
+            loadCheckout();
         }
 
         function loadProducts() {
@@ -517,8 +743,76 @@
             }
         }
 
-        function showProfile() {
-            showFlash('Profile page would open here', 'info');
+        function loadProfile() {
+            // Update statistics
+            const myProducts = products.filter(p => p.canEdit);
+            document.getElementById('products-count').textContent = myProducts.length;
+            document.getElementById('total-sales').textContent = '0'; // Demo value
+            document.getElementById('profile-cart-count').textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Load my products
+            const myProductsList = document.getElementById('my-products-list');
+            if (myProducts.length === 0) {
+                myProductsList.innerHTML = '<p class="has-text-grey">You haven\'t listed any products yet. <a href="#" onclick="showSell()">Create your first listing!</a></p>';
+            } else {
+                myProductsList.innerHTML = myProducts.map(product => `
+                    <div class="box">
+                        <div class="columns is-vcentered">
+                            <div class="column is-2">
+                                <div class="image is-64x64 ${product.imageClass}" style="border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;">
+                                    ${product.title.substring(0, 8)}
+                                </div>
+                            </div>
+                            <div class="column">
+                                <h4 class="title is-6">${product.title}</h4>
+                                <p class="subtitle is-7">${product.brand} - ${product.model}</p>
+                            </div>
+                            <div class="column is-narrow">
+                                <span class="tag is-info">${product.condition}</span>
+                            </div>
+                            <div class="column is-narrow">
+                                <strong>$${product.price.toLocaleString()}</strong>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="buttons">
+                                    <button class="button is-small" onclick="editProduct(${product.id})">Edit</button>
+                                    <button class="button is-small is-danger" onclick="deleteProduct(${product.id})">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function loadCheckout() {
+            // Update checkout summary
+            const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const shipping = cart.length > 0 ? 9.99 : 0;
+            const tax = subtotal * 0.08; // 8% tax
+            const total = subtotal + shipping + tax;
+
+            document.getElementById('checkout-subtotal').textContent = subtotal.toLocaleString();
+            document.getElementById('checkout-shipping').textContent = shipping.toFixed(2);
+            document.getElementById('checkout-tax').textContent = tax.toFixed(2);
+            document.getElementById('checkout-total').textContent = total.toFixed(2);
+
+            // Load checkout items
+            const checkoutItems = document.getElementById('checkout-items');
+            checkoutItems.innerHTML = cart.map(item => `
+                <div class="level" style="margin-bottom: 0.5rem;">
+                    <div class="level-left">
+                        <div class="level-item">
+                            <small>${item.product.title} x${item.quantity}</small>
+                        </div>
+                    </div>
+                    <div class="level-right">
+                        <div class="level-item">
+                            <small>$${(item.product.price * item.quantity).toLocaleString()}</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function createProduct(event) {
@@ -571,11 +865,36 @@
             dropdown.classList.toggle('is-active');
         }
 
+        function completeOrder(event) {
+            event.preventDefault();
+
+            // Simulate order processing
+            showFlash('Processing your order...', 'info');
+
+            setTimeout(() => {
+                const orderNumber = Math.floor(Math.random() * 1000000);
+                showFlash(`Order #${orderNumber} completed successfully! Thank you for your purchase.`, 'success');
+
+                // Clear cart
+                cart = [];
+                updateCartDisplay();
+
+                // Clear form
+                document.getElementById('checkout-form').reset();
+
+                // Go back to shop
+                setTimeout(() => {
+                    showShop();
+                }, 2000);
+            }, 1500);
+        }
+
         // Initialize
         updateCartDisplay();
 
-        // Add form submission handler
+        // Add form submission handlers
         document.getElementById('product-form').addEventListener('submit', createProduct);
+        document.getElementById('checkout-form').addEventListener('submit', completeOrder);
 
         // Add click outside handler for dropdown
         document.addEventListener('click', function(event) {
