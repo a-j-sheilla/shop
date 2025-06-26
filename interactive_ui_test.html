@@ -26,6 +26,9 @@
         .phone { background: linear-gradient(45deg, #feca57, #ff9ff3); }
         .headphones { background: linear-gradient(45deg, #ff9ff3, #f093fb); }
         .is-focused { border-color: #3273dc !important; box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25) !important; }
+        .product-detail-image { border-radius: 8px; overflow: hidden; }
+        .product-detail-info { padding-left: 2rem; }
+        .price-section { border: 2px solid #3273dc; border-radius: 8px; padding: 1rem; text-align: center; background: #f8f9fa; }
         .notification { position: fixed; top: 20px; right: 20px; z-index: 1000; min-width: 300px; }
         .fade-out { animation: fadeOut 3s forwards; }
         @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; display: none; } }
@@ -316,6 +319,79 @@
                             </div>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Detail Section (Hidden initially) -->
+        <div id="product-detail-section" class="container" style="display: none; padding: 2rem;">
+            <div class="columns">
+                <div class="column is-6">
+                    <div class="product-detail-image">
+                        <div class="product-image" id="detail-product-image" style="height: 400px; border-radius: 8px;">
+                            Product Image
+                        </div>
+                    </div>
+                </div>
+                <div class="column is-6">
+                    <div class="product-detail-info">
+                        <h1 class="title is-2" id="detail-product-title">Product Title</h1>
+                        <p class="subtitle is-4 has-text-grey">by <span id="detail-product-seller">Seller Name</span></p>
+
+                        <div class="tags" style="margin-bottom: 1rem;">
+                            <span class="tag is-info" id="detail-product-condition">Condition</span>
+                            <span class="tag is-light" id="detail-product-brand">Brand</span>
+                        </div>
+
+                        <div class="content">
+                            <h3 class="title is-4">Description</h3>
+                            <p id="detail-product-description">Product description will appear here...</p>
+                        </div>
+
+                        <div class="columns" style="margin-top: 2rem;">
+                            <div class="column">
+                                <p><strong>Model:</strong> <span id="detail-product-model">Model</span></p>
+                                <p><strong>Finish:</strong> <span id="detail-product-finish">Finish</span></p>
+                            </div>
+                        </div>
+
+                        <div class="price-section" style="margin: 2rem 0;">
+                            <h2 class="title is-3 has-text-primary">$<span id="detail-product-price">0</span></h2>
+                        </div>
+
+                        <div class="buttons">
+                            <button class="button is-primary is-large" onclick="addToCartFromDetail()">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Add to Cart</span>
+                            </button>
+
+                            <div id="detail-product-actions" style="display: none;">
+                                <button class="button is-light" onclick="editProductFromDetail()">
+                                    <span class="icon">
+                                        <i class="fas fa-edit"></i>
+                                    </span>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="button is-danger" onclick="deleteProductFromDetail()">
+                                    <span class="icon">
+                                        <i class="fas fa-trash"></i>
+                                    </span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="buttons" style="margin-top: 1rem;">
+                            <button class="button is-light" onclick="showShop()">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-left"></i>
+                                </span>
+                                <span>Back to Shop</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -631,6 +707,7 @@
             document.getElementById('cart-section').style.display = 'none';
             document.getElementById('sell-section').style.display = 'none';
             document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('product-detail-section').style.display = 'none';
             document.getElementById('edit-product-section').style.display = 'none';
             document.getElementById('checkout-section').style.display = 'none';
         }
@@ -669,11 +746,75 @@
             loadCheckout();
         }
 
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) {
+                showFlash('Product not found.', 'danger');
+                return;
+            }
+
+            hideAllSections();
+            document.getElementById('product-detail-section').style.display = 'block';
+
+            // Store current product for detail actions
+            window.currentDetailProduct = product;
+
+            // Populate product details
+            document.getElementById('detail-product-title').textContent = product.title;
+            document.getElementById('detail-product-seller').textContent = product.seller;
+            document.getElementById('detail-product-condition').textContent = product.condition;
+            document.getElementById('detail-product-brand').textContent = product.brand;
+            document.getElementById('detail-product-model').textContent = product.model;
+            document.getElementById('detail-product-finish').textContent = product.finish || 'Not specified';
+            document.getElementById('detail-product-price').textContent = product.price.toLocaleString();
+            document.getElementById('detail-product-description').textContent = product.description || 'No description available.';
+
+            // Set product image
+            const imageElement = document.getElementById('detail-product-image');
+            imageElement.className = `product-image ${product.imageClass}`;
+            imageElement.textContent = product.title;
+
+            // Show/hide edit actions based on ownership
+            const actionsElement = document.getElementById('detail-product-actions');
+            if (product.canEdit) {
+                actionsElement.style.display = 'block';
+            } else {
+                actionsElement.style.display = 'none';
+            }
+        }
+
+        function addToCartFromDetail() {
+            if (window.currentDetailProduct) {
+                addToCart(window.currentDetailProduct.id);
+            }
+        }
+
+        function editProductFromDetail() {
+            if (window.currentDetailProduct && window.currentDetailProduct.canEdit) {
+                openEditProductForm(window.currentDetailProduct);
+            } else {
+                showFlash('You can only edit your own products.', 'danger');
+            }
+        }
+
+        function deleteProductFromDetail() {
+            if (window.currentDetailProduct && window.currentDetailProduct.canEdit) {
+                if (confirm(`Are you sure you want to delete "${window.currentDetailProduct.title}"?`)) {
+                    const index = products.findIndex(p => p.id === window.currentDetailProduct.id);
+                    products.splice(index, 1);
+                    showFlash(`Product "${window.currentDetailProduct.title}" was successfully deleted.`, 'success');
+                    showShop();
+                }
+            } else {
+                showFlash('You can only delete your own products.', 'danger');
+            }
+        }
+
         function loadProducts() {
             const container = document.getElementById('products-section');
             container.innerHTML = products.map(product => `
                 <div class="product">
-                    <div class="product-thumb">
+                    <div class="product-thumb" onclick="showProductDetail(${product.id})" style="cursor: pointer;">
                         <div class="product-image ${product.imageClass}">
                             ${product.title}
                         </div>
@@ -682,13 +823,17 @@
                         </div>
                     </div>
                     <div class="pa3">
-                        <h3 class="title is-5">${product.title}</h3>
+                        <h3 class="title is-5" onclick="showProductDetail(${product.id})" style="cursor: pointer;">${product.title}</h3>
                         <p class="has-text-grey">Sold by: ${product.seller}</p>
                         <p class="title is-4 has-text-right">$${product.price.toLocaleString()}</p>
                         <div class="buttons">
                             <button class="button is-primary is-small" onclick="addToCart(${product.id})">
                                 <span class="icon"><i class="fas fa-cart-plus"></i></span>
                                 <span>Add to Cart</span>
+                            </button>
+                            <button class="button is-light is-small" onclick="showProductDetail(${product.id})">
+                                <span class="icon"><i class="fas fa-eye"></i></span>
+                                <span>View</span>
                             </button>
                             ${product.canEdit ? `
                                 <button class="button is-small" onclick="editProduct(${product.id})">Edit</button>
@@ -1087,7 +1232,12 @@
         }
 
         function cancelEditProduct() {
-            showProfile();
+            // Return to previous view (profile or product detail)
+            if (window.currentDetailProduct) {
+                showProductDetail(window.currentDetailProduct.id);
+            } else {
+                showProfile();
+            }
         }
 
         function updateProduct(event) {
@@ -1112,8 +1262,15 @@
 
             showFlash(`Product "${product.title}" updated successfully!`, 'success');
 
-            // Go back to profile
-            showProfile();
+            // Update the current detail product reference
+            window.currentDetailProduct = product;
+
+            // Go back to detail view or profile
+            if (window.currentDetailProduct) {
+                showProductDetail(product.id);
+            } else {
+                showProfile();
+            }
         }
 
         function completeOrder(event) {
