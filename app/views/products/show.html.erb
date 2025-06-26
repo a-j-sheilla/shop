@@ -64,7 +64,7 @@
         <p class="has-text-centered mb4">Sold by <%= product_author(@product) %></p>
 
         <div class="has-text-centered">
-          <%= link_to add_to_cart_path(@product), method: :post, class: "button is-primary is-large is-fullwidth" do %>
+          <%= link_to add_to_cart_path(@product), method: :post, class: "button is-primary is-large is-fullwidth", data: { turbo_method: :post } do %>
             <span class="icon">
               <i class="fas fa-cart-plus"></i>
             </span>

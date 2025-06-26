@@ -33,7 +33,7 @@
       <p class="f3 fw6 has-text-right pt2 price"><%= number_to_currency(product.price) %></p>
 
       <div class="buttons">
-        <%= link_to add_to_cart_path(product), method: :post, class: "button is-primary is-small" do %>
+        <%= link_to add_to_cart_path(product), method: :post, class: "button is-primary is-small", data: { turbo_method: :post } do %>
           <span class="icon">
             <i class="fas fa-cart-plus"></i>
           </span>
