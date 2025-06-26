@@ -6,12 +6,25 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .product-index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 2rem; }
+        .product-index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; padding: 1rem; }
+        @media (max-width: 768px) {
+            .product-index-grid { grid-template-columns: 1fr; padding: 1rem; gap: 1rem; }
+            .login-box { margin: 1rem; padding: 2rem; }
+            .navbar-menu { display: block !important; }
+            .container { padding: 0 1rem; }
+        }
         .product { border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: transform 0.2s; }
         .product:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .product-thumb { position: relative; height: 200px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; }
+        .product-thumb { position: relative; height: 200px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; text-align: center; }
         .condition { position: absolute; top: 10px; right: 10px; }
         .pa3 { padding: 1rem; }
+        .product-image { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .ferrari { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
+        .macbook { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .watch { background: linear-gradient(45deg, #45b7d1, #3498db); }
+        .chair { background: linear-gradient(45deg, #96ceb4, #85c1a3); }
+        .phone { background: linear-gradient(45deg, #feca57, #ff9ff3); }
+        .headphones { background: linear-gradient(45deg, #ff9ff3, #f093fb); }
         .notification { position: fixed; top: 20px; right: 20px; z-index: 1000; min-width: 300px; }
         .fade-out { animation: fadeOut 3s forwards; }
         @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; display: none; } }
@@ -78,8 +91,13 @@
                 <a class="navbar-item" href="#" onclick="showShop()">
                     <h1 class="title is-5">Shop</h1>
                 </a>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" onclick="toggleNavbar()">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-            <div class="navbar-menu">
+            <div class="navbar-menu" id="navbar-menu">
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <!-- Cart Icon -->
@@ -92,10 +110,10 @@
                             </span>
                         </a>
                         <a class="navbar-item button is-dark" href="#" onclick="showSell()">Sell</a>
-                        <div class="navbar-item has-dropdown is-hoverable">
+                        <div class="navbar-item has-dropdown" onclick="toggleAccountDropdown()">
                             <a class="navbar-link">Account</a>
                             <div class="navbar-dropdown is-right">
-                                <a class="navbar-item">Demo User</a>
+                                <a class="navbar-item" onclick="showProfile()">Demo User</a>
                                 <a class="navbar-item" onclick="logout()">Log Out</a>
                             </div>
                         </div>
@@ -252,12 +270,12 @@
 
         // Sample products
         const products = [
-            { id: 1, title: "Ferrari F40", brand: "Ferrari", model: "F40", price: 50000, condition: "Excellent", seller: "John Doe", image: "https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Ferrari+F40", canEdit: true },
-            { id: 2, title: "MacBook Pro", brand: "Lenovo", model: "ThinkPad", price: 1200, condition: "New", seller: "Jane Smith", image: "https://via.placeholder.com/300x200/4ecdc4/ffffff?text=MacBook+Pro", canEdit: false },
-            { id: 3, title: "Vintage Watch", brand: "Fossil", model: "Classic", price: 250, condition: "Used", seller: "Bob Wilson", image: "https://via.placeholder.com/300x200/45b7d1/ffffff?text=Vintage+Watch", canEdit: false },
-            { id: 4, title: "Gaming Chair", brand: "Opel", model: "Pro", price: 399, condition: "New", seller: "Demo User", image: "https://via.placeholder.com/300x200/96ceb4/ffffff?text=Gaming+Chair", canEdit: true },
-            { id: 5, title: "Smartphone", brand: "Lenovo", model: "Z6", price: 699, condition: "Excellent", seller: "Alice Brown", image: "https://via.placeholder.com/300x200/feca57/ffffff?text=Smartphone", canEdit: false },
-            { id: 6, title: "Headphones", brand: "Fossil", model: "Audio", price: 149, condition: "Good", seller: "Charlie Davis", image: "https://via.placeholder.com/300x200/ff9ff3/ffffff?text=Headphones", canEdit: false }
+            { id: 1, title: "Ferrari F40", brand: "Ferrari", model: "F40", price: 50000, condition: "Excellent", seller: "John Doe", imageClass: "ferrari", canEdit: true },
+            { id: 2, title: "MacBook Pro", brand: "Lenovo", model: "ThinkPad", price: 1200, condition: "New", seller: "Jane Smith", imageClass: "macbook", canEdit: false },
+            { id: 3, title: "Vintage Watch", brand: "Fossil", model: "Classic", price: 250, condition: "Used", seller: "Bob Wilson", imageClass: "watch", canEdit: false },
+            { id: 4, title: "Gaming Chair", brand: "Opel", model: "Pro", price: 399, condition: "New", seller: "Demo User", imageClass: "chair", canEdit: true },
+            { id: 5, title: "Smartphone", brand: "Lenovo", model: "Z6", price: 699, condition: "Excellent", seller: "Alice Brown", imageClass: "phone", canEdit: false },
+            { id: 6, title: "Headphones", brand: "Fossil", model: "Audio", price: 149, condition: "Good", seller: "Charlie Davis", imageClass: "headphones", canEdit: false }
         ];
 
         function login() {
@@ -305,7 +323,9 @@
             container.innerHTML = products.map(product => `
                 <div class="product">
                     <div class="product-thumb">
-                        <img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="product-image ${product.imageClass}">
+                            ${product.title}
+                        </div>
                         <div class="condition">
                             <span class="tag is-dark">${product.condition}</span>
                         </div>
@@ -320,8 +340,8 @@
                                 <span>Add to Cart</span>
                             </button>
                             ${product.canEdit ? `
-                                <button class="button is-small">Edit</button>
-                                <button class="button is-small is-danger">Delete</button>
+                                <button class="button is-small" onclick="editProduct(${product.id})">Edit</button>
+                                <button class="button is-small is-danger" onclick="deleteProduct(${product.id})">Delete</button>
                             ` : ''}
                         </div>
                     </div>
@@ -408,7 +428,9 @@
                     ${cart.map(item => `
                         <div class="columns is-vcentered" style="border-bottom: 1px solid #eee; padding: 1rem 0;">
                             <div class="column is-2">
-                                <img src="${item.product.image}" class="image is-64x64" style="object-fit: cover;">
+                                <div class="image is-64x64 ${item.product.imageClass}" style="border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold;">
+                                    ${item.product.title.substring(0, 8)}
+                                </div>
                             </div>
                             <div class="column is-4">
                                 <h4 class="title is-5">${item.product.title}</h4>
@@ -474,6 +496,31 @@
             showSell();
         }
 
+        function deleteProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product && product.canEdit && confirm(`Are you sure you want to delete "${product.title}"?`)) {
+                const index = products.findIndex(p => p.id === productId);
+                products.splice(index, 1);
+                showFlash(`Product "${product.title}" was successfully deleted.`, 'info');
+                loadProducts();
+            } else if (product && !product.canEdit) {
+                showFlash('You can only delete your own products.', 'danger');
+            }
+        }
+
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product && product.canEdit) {
+                showFlash('Edit functionality would open the edit form here', 'info');
+            } else {
+                showFlash('You can only edit your own products.', 'danger');
+            }
+        }
+
+        function showProfile() {
+            showFlash('Profile page would open here', 'info');
+        }
+
         function createProduct(event) {
             event.preventDefault();
 
@@ -490,6 +537,9 @@
                 return;
             }
 
+            const imageClasses = ['ferrari', 'macbook', 'watch', 'chair', 'phone', 'headphones'];
+            const randomImageClass = imageClasses[Math.floor(Math.random() * imageClasses.length)];
+
             const newProduct = {
                 id: products.length + 1,
                 title: title,
@@ -498,7 +548,7 @@
                 price: price,
                 condition: condition,
                 seller: currentUser,
-                image: `https://via.placeholder.com/300x200/95a5a6/ffffff?text=${encodeURIComponent(title)}`,
+                imageClass: randomImageClass,
                 canEdit: true
             };
 
@@ -511,11 +561,29 @@
             showShop();
         }
 
+        function toggleNavbar() {
+            const navbarMenu = document.getElementById('navbar-menu');
+            navbarMenu.classList.toggle('is-active');
+        }
+
+        function toggleAccountDropdown() {
+            const dropdown = document.querySelector('.navbar-item.has-dropdown');
+            dropdown.classList.toggle('is-active');
+        }
+
         // Initialize
         updateCartDisplay();
 
         // Add form submission handler
         document.getElementById('product-form').addEventListener('submit', createProduct);
+
+        // Add click outside handler for dropdown
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.navbar-item.has-dropdown');
+            if (dropdown && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('is-active');
+            }
+        });
     </script>
 </body>
 </html>
