@@ -41,13 +41,24 @@
             <div class="field is-grouped">
 
             <!-- Cart Icon -->
-            <%= link_to cart_path(@cart), class: "navbar-item" do %>
-              <span class="icon-text">
-                <span class="icon">
-                  <i class="fas fa-shopping-cart"></i>
+            <% if @cart %>
+              <%= link_to cart_path(@cart), class: "navbar-item" do %>
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </span>
+                  <span class="tag is-primary is-rounded">
+                    <%= @cart.total_items rescue 0 %>
+                  </span>
                 </span>
-                <span class="tag is-primary is-rounded">
-                  <%= @cart.total_items %>
+              <% end %>
+            <% else %>
+              <span class="navbar-item">
+                <span class="icon-text">
+                  <span class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </span>
+                  <span class="tag is-primary is-rounded">0</span>
                 </span>
               </span>
             <% end %>
@@ -76,6 +87,21 @@
   </nav>
 
   <%= yield(:header) %>
+
+  <!-- Flash Messages -->
+  <% if notice %>
+    <div class="notification is-success is-light" style="margin: 0; border-radius: 0;">
+      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+      <%= notice %>
+    </div>
+  <% end %>
+
+  <% if alert %>
+    <div class="notification is-danger is-light" style="margin: 0; border-radius: 0;">
+      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+      <%= alert %>
+    </div>
+  <% end %>
 
   <div class="container">
 
