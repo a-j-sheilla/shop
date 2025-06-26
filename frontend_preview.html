@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop - E-Commerce Login</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 2rem; }
+        .product { border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+        .product-thumb { position: relative; height: 200px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; }
+        .condition { position: absolute; top: 10px; right: 10px; }
+        .pa3 { padding: 1rem; }
+        .pt4 { padding-top: 2rem; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar is-warning" role="navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <h1 class="title is-5">Shop</h1>
+            </a>
+        </div>
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <!-- Cart Icon -->
+                    <a class="navbar-item" href="/cart">
+                        <span class="icon-text">
+                            <span class="icon">
+                                <i class="fas fa-shopping-cart"></i>
+                            </span>
+                            <span class="tag is-primary is-rounded">3</span>
+                        </span>
+                    </a>
+                    <a class="navbar-item button is-dark" href="/products/new">Sell</a>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">Account</a>
+                        <div class="navbar-dropdown is-right">
+                            <a class="navbar-item">John Doe</a>
+                            <a class="navbar-item">Log Out</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero is-warning">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">Browse new products</h1>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <div class="product-index-grid">
+        <!-- Product 1 -->
+        <div class="product">
+            <div class="product-thumb">
+                <img src="https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Ferrari+F40" alt="Ferrari F40" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="condition">
+                    <span class="tag is-dark">Excellent</span>
+                </div>
+            </div>
+            <div class="pa3">
+                <h3 class="title is-5">Ferrari F40</h3>
+                <p class="has-text-grey">Sold by: John Doe</p>
+                <p class="title is-4 has-text-right">$50,000</p>
+                <div class="buttons">
+                    <button class="button is-primary is-small">
+                        <span class="icon"><i class="fas fa-cart-plus"></i></span>
+                        <span>Add to Cart</span>
+                    </button>
+                    <button class="button is-small">Edit</button>
+                    <button class="button is-small is-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product">
+            <div class="product-thumb">
+                <img src="https://via.placeholder.com/300x200/4ecdc4/ffffff?text=MacBook+Pro" alt="MacBook Pro" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="condition">
+                    <span class="tag is-dark">New</span>
+                </div>
+            </div>
+            <div class="pa3">
+                <h3 class="title is-5">MacBook Pro</h3>
+                <p class="has-text-grey">Sold by: Jane Smith</p>
+                <p class="title is-4 has-text-right">$1,200</p>
+                <div class="buttons">
+                    <button class="button is-primary is-small">
+                        <span class="icon"><i class="fas fa-cart-plus"></i></span>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product">
+            <div class="product-thumb">
+                <img src="https://via.placeholder.com/300x200/45b7d1/ffffff?text=Vintage+Watch" alt="Vintage Watch" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="condition">
+                    <span class="tag is-dark">Used</span>
+                </div>
+            </div>
+            <div class="pa3">
+                <h3 class="title is-5">Vintage Watch</h3>
+                <p class="has-text-grey">Sold by: Bob Wilson</p>
+                <p class="title is-4 has-text-right">$250</p>
+                <div class="buttons">
+                    <button class="button is-primary is-small">
+                        <span class="icon"><i class="fas fa-cart-plus"></i></span>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Preview Modal (Hidden by default) -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Your Shopping Cart</p>
+                <button class="delete" onclick="closeCart()"></button>
+            </header>
+            <section class="modal-card-body">
+                <div class="columns is-vcentered" style="border-bottom: 1px solid #eee; padding: 1rem 0;">
+                    <div class="column is-2">
+                        <img src="https://via.placeholder.com/64x64/ff6b6b/ffffff?text=F40" class="image is-64x64">
+                    </div>
+                    <div class="column is-4">
+                        <h4 class="title is-5">Ferrari F40</h4>
+                        <p class="subtitle is-6">Ferrari - F40</p>
+                    </div>
+                    <div class="column is-2">
+                        <div class="field has-addons">
+                            <div class="control">
+                                <input class="input is-small" type="number" value="2" min="1" max="99" style="width: 60px;">
+                            </div>
+                            <div class="control">
+                                <button class="button is-small is-info">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-2">
+                        <span class="has-text-weight-bold">$50,000</span>
+                    </div>
+                    <div class="column is-2">
+                        <span class="has-text-weight-bold">$100,000</span>
+                    </div>
+                    <div class="column is-1">
+                        <button class="button is-small is-danger">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="has-text-right" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #3273dc;">
+                    <h3 class="title is-4">Total: $100,250</h3>
+                    <p class="subtitle is-6">(3 items)</p>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-light" onclick="closeCart()">Continue Shopping</button>
+                <button class="button is-warning">Empty Cart</button>
+                <button class="button is-primary is-large">
+                    <span class="icon"><i class="fas fa-credit-card"></i></span>
+                    <span>Checkout</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function openCart() {
+            document.getElementById('cart-modal').classList.add('is-active');
+        }
+        function closeCart() {
+            document.getElementById('cart-modal').classList.remove('is-active');
+        }
+        // Add click handler to cart icon
+        document.querySelector('.navbar-item[href="/cart"]').onclick = function(e) {
+            e.preventDefault();
+            openCart();
+        };
+    </script>
+</body>
+</html>
