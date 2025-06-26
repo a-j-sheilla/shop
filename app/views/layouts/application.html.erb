@@ -8,6 +8,7 @@
 
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   </head>
 
   <body>
@@ -38,6 +39,18 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="field is-grouped">
+
+            <!-- Cart Icon -->
+            <%= link_to cart_path(@cart), class: "navbar-item" do %>
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span class="tag is-primary is-rounded">
+                  <%= @cart.total_items %>
+                </span>
+              </span>
+            <% end %>
 
             <% if user_signed_in? %>
               <%= link_to 'Sell', new_product_path, class: "navbar-item button is-dark" %>
