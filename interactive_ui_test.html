@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shop - Interactive E-Commerce Test</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .product-index-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; padding: 2rem; }
+        .product { border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: transform 0.2s; }
+        .product:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .product-thumb { position: relative; height: 200px; background: #f5f5f5; display: flex; align-items: center; justify-content: center; }
+        .condition { position: absolute; top: 10px; right: 10px; }
+        .pa3 { padding: 1rem; }
+        .notification { position: fixed; top: 20px; right: 20px; z-index: 1000; min-width: 300px; }
+        .fade-out { animation: fadeOut 3s forwards; }
+        @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; display: none; } }
+        .cart-badge { animation: bounce 0.5s; }
+        @keyframes bounce { 0%, 20%, 60%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 80% { transform: translateY(-5px); } }
+        .login-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .login-box { background: white; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 3rem; max-width: 400px; width: 100%; }
+    </style>
+</head>
+<body>
+    <!-- Login Screen (Initial) -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="has-text-centered" style="margin-bottom: 2rem;">
+                <h1 class="title is-3">
+                    <span class="icon-text">
+                        <span class="icon has-text-primary">
+                            <i class="fas fa-shopping-bag"></i>
+                        </span>
+                        <span>Shop</span>
+                    </span>
+                </h1>
+                <p class="subtitle is-6">Welcome to our e-commerce platform</p>
+            </div>
+
+            <div class="field">
+                <label class="label">Email</label>
+                <div class="control has-icons-left">
+                    <input class="input" type="email" placeholder="Enter your email" value="demo@example.com">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Password</label>
+                <div class="control has-icons-left">
+                    <input class="input" type="password" placeholder="Enter your password" value="password">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                </div>
+            </div>
+
+            <button class="button is-primary is-fullwidth" onclick="login()">
+                <span class="icon">
+                    <i class="fas fa-sign-in-alt"></i>
+                </span>
+                <span>Sign In</span>
+            </button>
+
+            <div class="has-text-centered" style="margin-top: 1rem;">
+                <p class="has-text-grey">Demo credentials are pre-filled. Click Sign In to test!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application (Hidden initially) -->
+    <div id="main-app" style="display: none;">
+        <!-- Navigation -->
+        <nav class="navbar is-warning" role="navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="#" onclick="showShop()">
+                    <h1 class="title is-5">Shop</h1>
+                </a>
+            </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <!-- Cart Icon -->
+                        <a class="navbar-item" href="#" onclick="showCart()">
+                            <span class="icon-text">
+                                <span class="icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </span>
+                                <span class="tag is-primary is-rounded" id="cart-count">0</span>
+                            </span>
+                        </a>
+                        <a class="navbar-item button is-dark" href="#" onclick="showSell()">Sell</a>
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            <a class="navbar-link">Account</a>
+                            <div class="navbar-dropdown is-right">
+                                <a class="navbar-item">Demo User</a>
+                                <a class="navbar-item" onclick="logout()">Log Out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Flash Messages Container -->
+        <div id="flash-container"></div>
+
+        <!-- Hero Section -->
+        <section class="hero is-warning" id="hero-section">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">Browse new products</h1>
+                    <p class="subtitle">Find amazing deals from our sellers</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Grid -->
+        <div id="products-section" class="product-index-grid">
+            <!-- Products will be loaded here -->
+        </div>
+
+        <!-- Cart Section (Hidden initially) -->
+        <div id="cart-section" class="container" style="display: none; padding: 2rem;">
+            <h1 class="title">Your Shopping Cart</h1>
+            <div id="cart-items"></div>
+            <div id="cart-total" class="has-text-right" style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid #3273dc;">
+                <h3 class="title is-4">Total: $<span id="total-price">0.00</span></h3>
+                <p class="subtitle is-6">(<span id="total-items">0</span> items)</p>
+            </div>
+            <div class="buttons is-right" style="margin-top: 2rem;">
+                <button class="button is-light" onclick="showShop()">Continue Shopping</button>
+                <button class="button is-warning" onclick="emptyCart()">Empty Cart</button>
+                <button class="button is-primary is-large">
+                    <span class="icon">
+                        <i class="fas fa-credit-card"></i>
+                    </span>
+                    <span>Checkout</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sell Product Section (Hidden initially) -->
+        <div id="sell-section" class="container" style="display: none; padding: 2rem;">
+            <h1 class="title">Sell a Product</h1>
+            <div class="columns">
+                <div class="column is-8">
+                    <form id="product-form">
+                        <div class="columns">
+                            <div class="field column is-9">
+                                <label class="label">Title</label>
+                                <div class="control">
+                                    <input class="input" type="text" id="product-title" placeholder="Product title" required>
+                                </div>
+                            </div>
+                            <div class="field column">
+                                <label class="label">Price</label>
+                                <div class="control">
+                                    <input class="input" type="number" id="product-price" placeholder="0.00" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Model</label>
+                            <div class="control">
+                                <input class="input" type="text" id="product-model" placeholder="Product model" required>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Description</label>
+                            <div class="control">
+                                <textarea class="textarea" id="product-description" placeholder="Describe your product" required></textarea>
+                            </div>
+                        </div>
+
+                        <div class="columns">
+                            <div class="field column is-4">
+                                <label class="label">Brand</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="product-brand" required>
+                                            <option value="">Select brand</option>
+                                            <option value="Ferrari">Ferrari</option>
+                                            <option value="Opel">Opel</option>
+                                            <option value="Lenovo">Lenovo</option>
+                                            <option value="Fossil">Fossil</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field column is-4">
+                                <label class="label">Condition</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="product-condition" required>
+                                            <option value="">Select condition</option>
+                                            <option value="New">New</option>
+                                            <option value="Excellent">Excellent</option>
+                                            <option value="Mint">Mint</option>
+                                            <option value="Used">Used</option>
+                                            <option value="Fair">Fair</option>
+                                            <option value="Poor">Poor</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field column is-4">
+                                <label class="label">Finish</label>
+                                <div class="control">
+                                    <div class="select is-fullwidth">
+                                        <select id="product-finish" required>
+                                            <option value="">Select finish</option>
+                                            <option value="Black">Black</option>
+                                            <option value="White">White</option>
+                                            <option value="Navy">Navy</option>
+                                            <option value="Blue">Blue</option>
+                                            <option value="Red">Red</option>
+                                            <option value="Clear">Clear</option>
+                                            <option value="Satin">Satin</option>
+                                            <option value="Yellow">Yellow</option>
+                                            <option value="Seafoam">Seafoam</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button type="submit" class="button is-warning">Create Product</button>
+                            </div>
+                            <div class="control">
+                                <button type="button" class="button is-light" onclick="showShop()">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cart data
+        let cart = [];
+        let currentUser = null;
+
+        // Sample products
+        const products = [
+            { id: 1, title: "Ferrari F40", brand: "Ferrari", model: "F40", price: 50000, condition: "Excellent", seller: "John Doe", image: "https://via.placeholder.com/300x200/ff6b6b/ffffff?text=Ferrari+F40", canEdit: true },
+            { id: 2, title: "MacBook Pro", brand: "Lenovo", model: "ThinkPad", price: 1200, condition: "New", seller: "Jane Smith", image: "https://via.placeholder.com/300x200/4ecdc4/ffffff?text=MacBook+Pro", canEdit: false },
+            { id: 3, title: "Vintage Watch", brand: "Fossil", model: "Classic", price: 250, condition: "Used", seller: "Bob Wilson", image: "https://via.placeholder.com/300x200/45b7d1/ffffff?text=Vintage+Watch", canEdit: false },
+            { id: 4, title: "Gaming Chair", brand: "Opel", model: "Pro", price: 399, condition: "New", seller: "Demo User", image: "https://via.placeholder.com/300x200/96ceb4/ffffff?text=Gaming+Chair", canEdit: true },
+            { id: 5, title: "Smartphone", brand: "Lenovo", model: "Z6", price: 699, condition: "Excellent", seller: "Alice Brown", image: "https://via.placeholder.com/300x200/feca57/ffffff?text=Smartphone", canEdit: false },
+            { id: 6, title: "Headphones", brand: "Fossil", model: "Audio", price: 149, condition: "Good", seller: "Charlie Davis", image: "https://via.placeholder.com/300x200/ff9ff3/ffffff?text=Headphones", canEdit: false }
+        ];
+
+        function login() {
+            currentUser = "Demo User";
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            showShop();
+            showFlash('Welcome! You are now logged in.', 'success');
+        }
+
+        function logout() {
+            currentUser = null;
+            cart = [];
+            updateCartDisplay();
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+            showFlash('You have been logged out.', 'info');
+        }
+
+        function showShop() {
+            document.getElementById('hero-section').style.display = 'block';
+            document.getElementById('products-section').style.display = 'grid';
+            document.getElementById('cart-section').style.display = 'none';
+            document.getElementById('sell-section').style.display = 'none';
+            loadProducts();
+        }
+
+        function showCart() {
+            document.getElementById('hero-section').style.display = 'none';
+            document.getElementById('products-section').style.display = 'none';
+            document.getElementById('cart-section').style.display = 'block';
+            document.getElementById('sell-section').style.display = 'none';
+            displayCart();
+        }
+
+        function showSell() {
+            document.getElementById('hero-section').style.display = 'none';
+            document.getElementById('products-section').style.display = 'none';
+            document.getElementById('cart-section').style.display = 'none';
+            document.getElementById('sell-section').style.display = 'block';
+        }
+
+        function loadProducts() {
+            const container = document.getElementById('products-section');
+            container.innerHTML = products.map(product => `
+                <div class="product">
+                    <div class="product-thumb">
+                        <img src="${product.image}" alt="${product.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <div class="condition">
+                            <span class="tag is-dark">${product.condition}</span>
+                        </div>
+                    </div>
+                    <div class="pa3">
+                        <h3 class="title is-5">${product.title}</h3>
+                        <p class="has-text-grey">Sold by: ${product.seller}</p>
+                        <p class="title is-4 has-text-right">$${product.price.toLocaleString()}</p>
+                        <div class="buttons">
+                            <button class="button is-primary is-small" onclick="addToCart(${product.id})">
+                                <span class="icon"><i class="fas fa-cart-plus"></i></span>
+                                <span>Add to Cart</span>
+                            </button>
+                            ${product.canEdit ? `
+                                <button class="button is-small">Edit</button>
+                                <button class="button is-small is-danger">Delete</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.product.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+                showFlash(`Increased quantity of "${product.title}" to ${existingItem.quantity}`, 'success');
+            } else {
+                cart.push({ product: product, quantity: 1 });
+                showFlash(`Added "${product.title}" to your cart`, 'success');
+            }
+            
+            updateCartDisplay();
+            animateCartIcon();
+        }
+
+        function removeFromCart(productId) {
+            const itemIndex = cart.findIndex(item => item.product.id === productId);
+            if (itemIndex > -1) {
+                const product = cart[itemIndex].product;
+                cart.splice(itemIndex, 1);
+                showFlash(`Removed "${product.title}" from your cart`, 'info');
+                updateCartDisplay();
+                displayCart();
+            }
+        }
+
+        function updateQuantity(productId, newQuantity) {
+            const item = cart.find(item => item.product.id === productId);
+            if (item) {
+                if (newQuantity > 0) {
+                    item.quantity = newQuantity;
+                    showFlash('Quantity updated', 'success');
+                } else {
+                    removeFromCart(productId);
+                    return;
+                }
+                updateCartDisplay();
+                displayCart();
+            }
+        }
+
+        function emptyCart() {
+            if (cart.length > 0 && confirm('Are you sure you want to empty your cart?')) {
+                cart = [];
+                updateCartDisplay();
+                showFlash('Cart emptied successfully', 'info');
+                showShop();
+            }
+        }
+
+        function updateCartDisplay() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+            
+            const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            document.getElementById('total-price').textContent = totalPrice.toLocaleString();
+            document.getElementById('total-items').textContent = totalItems;
+        }
+
+        function displayCart() {
+            const container = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="box has-text-centered">
+                        <h2 class="title is-4">Your cart is empty</h2>
+                        <p class="subtitle">Start shopping to add items to your cart!</p>
+                        <button class="button is-primary" onclick="showShop()">Start Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="box">
+                    ${cart.map(item => `
+                        <div class="columns is-vcentered" style="border-bottom: 1px solid #eee; padding: 1rem 0;">
+                            <div class="column is-2">
+                                <img src="${item.product.image}" class="image is-64x64" style="object-fit: cover;">
+                            </div>
+                            <div class="column is-4">
+                                <h4 class="title is-5">${item.product.title}</h4>
+                                <p class="subtitle is-6">${item.product.brand} - ${item.product.model}</p>
+                            </div>
+                            <div class="column is-2">
+                                <div class="field has-addons">
+                                    <div class="control">
+                                        <input class="input is-small" type="number" value="${item.quantity}" min="1" max="99" 
+                                               onchange="updateQuantity(${item.product.id}, this.value)" style="width: 60px;">
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-small is-info" onclick="updateQuantity(${item.product.id}, document.querySelector('input[onchange*=\\'${item.product.id}\\']').value)">Update</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="column is-2">
+                                <span class="has-text-weight-bold">$${item.product.price.toLocaleString()}</span>
+                            </div>
+                            <div class="column is-2">
+                                <span class="has-text-weight-bold">$${(item.product.price * item.quantity).toLocaleString()}</span>
+                            </div>
+                            <div class="column is-1">
+                                <button class="button is-small is-danger" onclick="removeFromCart(${item.product.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showFlash(message, type) {
+            const container = document.getElementById('flash-container');
+            const className = type === 'success' ? 'is-success' : type === 'info' ? 'is-info' : 'is-danger';
+            
+            const flash = document.createElement('div');
+            flash.className = `notification ${className} fade-out`;
+            flash.innerHTML = `
+                <button class="delete" onclick="this.parentElement.remove()"></button>
+                ${message}
+            `;
+            
+            container.appendChild(flash);
+            
+            setTimeout(() => {
+                if (flash.parentElement) {
+                    flash.remove();
+                }
+            }, 3000);
+        }
+
+        function animateCartIcon() {
+            const cartIcon = document.getElementById('cart-count');
+            cartIcon.classList.add('cart-badge');
+            setTimeout(() => {
+                cartIcon.classList.remove('cart-badge');
+            }, 500);
+        }
+
+        function showNewProduct() {
+            showSell();
+        }
+
+        function createProduct(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('product-title').value;
+            const price = parseFloat(document.getElementById('product-price').value);
+            const model = document.getElementById('product-model').value;
+            const description = document.getElementById('product-description').value;
+            const brand = document.getElementById('product-brand').value;
+            const condition = document.getElementById('product-condition').value;
+            const finish = document.getElementById('product-finish').value;
+
+            if (!title || !price || !model || !description || !brand || !condition || !finish) {
+                showFlash('Please fill in all fields', 'danger');
+                return;
+            }
+
+            const newProduct = {
+                id: products.length + 1,
+                title: title,
+                brand: brand,
+                model: model,
+                price: price,
+                condition: condition,
+                seller: currentUser,
+                image: `https://via.placeholder.com/300x200/95a5a6/ffffff?text=${encodeURIComponent(title)}`,
+                canEdit: true
+            };
+
+            products.push(newProduct);
+
+            // Clear form
+            document.getElementById('product-form').reset();
+
+            showFlash(`Product "${title}" was successfully created. Your product is now live!`, 'success');
+            showShop();
+        }
+
+        // Initialize
+        updateCartDisplay();
+
+        // Add form submission handler
+        document.getElementById('product-form').addEventListener('submit', createProduct);
+    </script>
+</body>
+</html>
