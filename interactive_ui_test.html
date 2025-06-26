@@ -25,6 +25,7 @@
         .chair { background: linear-gradient(45deg, #96ceb4, #85c1a3); }
         .phone { background: linear-gradient(45deg, #feca57, #ff9ff3); }
         .headphones { background: linear-gradient(45deg, #ff9ff3, #f093fb); }
+        .is-focused { border-color: #3273dc !important; box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25) !important; }
         .notification { position: fixed; top: 20px; right: 20px; z-index: 1000; min-width: 300px; }
         .fade-out { animation: fadeOut 3s forwards; }
         @keyframes fadeOut { 0% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; display: none; } }
@@ -170,13 +171,13 @@
                         <div class="field">
                             <label class="label">Name</label>
                             <div class="control">
-                                <input class="input" type="text" value="Demo User" readonly>
+                                <input class="input" id="profile-name" type="text" value="Demo User" readonly>
                             </div>
                         </div>
                         <div class="field">
                             <label class="label">Email</label>
                             <div class="control">
-                                <input class="input" type="email" value="demo@example.com" readonly>
+                                <input class="input" id="profile-email" type="email" value="demo@example.com" readonly>
                             </div>
                         </div>
                         <div class="field">
@@ -187,7 +188,9 @@
                         </div>
                         <div class="field is-grouped">
                             <div class="control">
-                                <button class="button is-primary">Edit Profile</button>
+                                <button class="button is-primary" onclick="toggleEditProfile()">
+                                    <span id="edit-profile-text">Edit Profile</span>
+                                </button>
                             </div>
                             <div class="control">
                                 <button class="button is-light" onclick="showShop()">Back to Shop</button>
@@ -727,8 +730,17 @@
             if (product && product.canEdit && confirm(`Are you sure you want to delete "${product.title}"?`)) {
                 const index = products.findIndex(p => p.id === productId);
                 products.splice(index, 1);
-                showFlash(`Product "${product.title}" was successfully deleted.`, 'info');
-                loadProducts();
+                showFlash(`Product "${product.title}" was successfully deleted.`, 'success');
+
+                // Refresh shop view if visible
+                if (document.getElementById('products-section').style.display === 'grid') {
+                    loadProducts();
+                }
+
+                // Refresh profile view if visible
+                if (document.getElementById('profile-section').style.display === 'block') {
+                    loadProfile();
+                }
             } else if (product && !product.canEdit) {
                 showFlash('You can only delete your own products.', 'danger');
             }
@@ -737,7 +749,8 @@
         function editProduct(productId) {
             const product = products.find(p => p.id === productId);
             if (product && product.canEdit) {
-                showFlash('Edit functionality would open the edit form here', 'info');
+                showFlash(`Edit functionality for "${product.title}" would open the edit form here`, 'info');
+                // In a real app, this would open an edit form or redirect to edit page
             } else {
                 showFlash('You can only edit your own products.', 'danger');
             }
@@ -775,13 +788,70 @@
                             </div>
                             <div class="column is-narrow">
                                 <div class="buttons">
-                                    <button class="button is-small" onclick="editProduct(${product.id})">Edit</button>
-                                    <button class="button is-small is-danger" onclick="deleteProduct(${product.id})">Delete</button>
+                                    <button class="button is-small" onclick="editProductFromProfile(${product.id})">Edit</button>
+                                    <button class="button is-small is-danger" onclick="deleteProductFromProfile(${product.id})">Delete</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 `).join('');
+            }
+        }
+
+        function toggleEditProfile() {
+            const nameField = document.getElementById('profile-name');
+            const emailField = document.getElementById('profile-email');
+            const editButton = document.getElementById('edit-profile-text');
+
+            if (nameField.readOnly) {
+                // Enable editing
+                nameField.readOnly = false;
+                emailField.readOnly = false;
+                nameField.classList.add('is-focused');
+                emailField.classList.add('is-focused');
+                editButton.textContent = 'Save Changes';
+                showFlash('You can now edit your profile information', 'info');
+            } else {
+                // Save changes
+                nameField.readOnly = true;
+                emailField.readOnly = true;
+                nameField.classList.remove('is-focused');
+                emailField.classList.remove('is-focused');
+                editButton.textContent = 'Edit Profile';
+
+                // Update current user name
+                currentUser = nameField.value;
+
+                showFlash('Profile updated successfully!', 'success');
+            }
+        }
+
+        function editProductFromProfile(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product && product.canEdit) {
+                showFlash(`Edit functionality for "${product.title}" would open the edit form here`, 'info');
+                // In a real app, this would open an edit form or redirect to edit page
+            } else {
+                showFlash('You can only edit your own products.', 'danger');
+            }
+        }
+
+        function deleteProductFromProfile(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product && product.canEdit && confirm(`Are you sure you want to delete "${product.title}"?`)) {
+                const index = products.findIndex(p => p.id === productId);
+                products.splice(index, 1);
+                showFlash(`Product "${product.title}" was successfully deleted.`, 'success');
+
+                // Refresh profile to update the list
+                loadProfile();
+
+                // If we're also viewing the shop, refresh it too
+                if (document.getElementById('products-section').style.display === 'grid') {
+                    loadProducts();
+                }
+            } else if (product && !product.canEdit) {
+                showFlash('You can only delete your own products.', 'danger');
             }
         }
 
