@@ -25,6 +25,9 @@ class ProductsController < ApplicationController
 
   # GET /products/1/edit
   def edit
+    unless @product.user == current_user
+      redirect_to shop_path, alert: "You can only edit your own products."
+    end
   end
 
   # POST /products or /products.json
@@ -33,7 +36,7 @@ class ProductsController < ApplicationController
 
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: "Product was successfully created." }
+        format.html { redirect_to @product, notice: "Product was successfully created. Your product is now live!" }
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -44,6 +47,11 @@ class ProductsController < ApplicationController
 
   # PATCH/PUT /products/1 or /products/1.json
   def update
+    unless @product.user == current_user
+      redirect_to shop_path, alert: "You can only update your own products."
+      return
+    end
+
     respond_to do |format|
       if @product.update(product_params)
         format.html { redirect_to @product, notice: "Product was successfully updated." }
@@ -56,8 +64,17 @@ class ProductsController < ApplicationController
   end
 
  # DELETE /products/1 or /products/1.json
-def destroy
-end
+  def destroy
+    if @product.user == current_user
+      @product.destroy
+      respond_to do |format|
+        format.html { redirect_to shop_path, notice: "Product was successfully deleted." }
+        format.json { head :no_content }
+      end
+    else
+      redirect_to shop_path, alert: "You can only delete your own products."
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
