@@ -1,8 +1,8 @@
 class Product < ApplicationRecord
 
-  before_destroy :not_referenced_by_any_line_item
   belongs_to :user, optional: true
   has_many :cart_items, dependent: :destroy
+  before_destroy :not_referenced_by_any_line_item
 
   mount_uploader :image, ImageUploader
   serialize :image, JSON # If you use SQLite, add this line
@@ -11,7 +11,7 @@ class Product < ApplicationRecord
   # Set max lenght to the description, price and title
   validates :description, length: { maximum: 1000, too_long: "%{count} characters is the maximum aloud. "}
   validates :title, length: { maximum: 140, too_long: "%{count} characters is the maximum aloud. "}
-  validates :price, length: { maximum: 10 }
+  validates :price, length: { maximum: 10 }, presence: true
 
   # You can input more brands finish and condition here
   BRAND = %w{ Ferrari Opel Lenovo Fossil}
