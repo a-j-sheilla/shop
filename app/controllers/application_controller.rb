@@ -10,6 +10,6 @@ class ApplicationController < ActionController::Base
 
     # Redirect to login after logout
     def after_sign_out_path_for(resource_or_scope)
-      root_path
+      shop_path
     end
 end
