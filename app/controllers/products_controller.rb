@@ -66,6 +66,10 @@ class ProductsController < ApplicationController
  # DELETE /products/1 or /products/1.json
   def destroy
     if @product.user == current_user
+      
+      # if @product.cart_items.exists?
+      #   redirect_to shop_path, alert: "This product is in someone's cart and can't be deleted." and return
+      # end
       @product.destroy
       respond_to do |format|
         format.html { redirect_to shop_path, notice: "Product was successfully deleted." }
