@@ -87,22 +87,7 @@
   </nav>
 
   <%= yield(:header) %>
-
-  <!-- Flash Messages -->
-  <% if notice %>
-    <div class="notification is-success is-light" style="margin: 0; border-radius: 0;">
-      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-      <%= notice %>
-    </div>
-  <% end %>
-
-  <% if alert %>
-    <div class="notification is-danger is-light" style="margin: 0; border-radius: 0;">
-      <button class="delete" onclick="this.parentElement.style.display='none'"></button>
-      <%= alert %>
-    </div>
-  <% end %>
-
+  
   <div class="container">
 
     <%= yield %>
