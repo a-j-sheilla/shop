@@ -1,7 +1,6 @@
 import Rails from "@rails/ujs"
 import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
-import "channels"
 
 Rails.start()
 Turbolinks.start()
@@ -14,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       msg.style.transition = "opacity 1s ease-out";
       msg.style.opacity = 0;
-      setTimeout(() => msg.remove(), 500);
+      setTimeout(() => msg.remove(), 4000);
     }, 100);
   });
 });
