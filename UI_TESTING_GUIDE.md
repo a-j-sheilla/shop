@@ -116,9 +116,10 @@ If all these work in the interactive test, then the **real Rails application** w
 ##  Next Steps
 
 Once you have a working Rails environment:
-1. Run `bundle install`
+1. Run `bundle install` or `./script.sh` if you dont want issue of compactability
 2. Run `rails db:migrate` 
-3. Run `rails s`
+3. Run `rails s` and `bin/webpack-dev-server` side by side for js to be accessed well
+
 4. Visit `http://localhost:3000`
 
 The real application will behave **exactly like this interactive test** because we've implemented all the same functionality in the Rails code.
