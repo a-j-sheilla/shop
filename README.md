@@ -2,7 +2,7 @@
 
 A modern e-commerce web application built with Ruby on Rails, featuring user authentication, product management, and a complete shopping cart system.
 
-## 🚀 Features
+##  Features
 
 ### Core Functionality
 - **User Authentication**: Secure user registration and login with Devise
@@ -34,7 +34,7 @@ A modern e-commerce web application built with Ruby on Rails, featuring user aut
 - **Asset Pipeline**: Webpacker for JavaScript bundling
 - **Styling**: Bulma CSS framework with Font Awesome icons
 
-## 📋 Prerequisites
+##  Prerequisites
 
 Before running this application, make sure you have:
 
@@ -44,7 +44,7 @@ Before running this application, make sure you have:
 - Node.js and Yarn (for JavaScript dependencies)
 - ImageMagick (for image processing)
 
-## 🚀 Installation & Setup
+##  Installation & Setup
 
 1. **Clone the repository**
    ```bash
@@ -55,6 +55,11 @@ Before running this application, make sure you have:
 2. **Install Ruby dependencies**
    ```bash
    bundle install
+   ```
+   or
+   ```bash
+   chmod +x ./script.sh
+   ./script.sh
    ```
 
 3. **Install JavaScript dependencies**
@@ -81,7 +86,7 @@ Before running this application, make sure you have:
 6. **Visit the application**
    Open your browser and navigate to `http://localhost:3000`
 
-## 📖 Usage
+##  Usage
 
 ### Getting Started
 1. **Register**: Create a new account or use the seeded user (user@example.com / password)
@@ -95,7 +100,7 @@ Before running this application, make sure you have:
 - **Registered Users**: Can create, edit, and delete their own products
 - **Product Owners**: Full control over their product listings
 
-## 🏗 Project Structure
+##  Project Structure
 
 ```
 shop/
@@ -112,7 +117,7 @@ shop/
 └── test/              # Test files
 ```
 
-## 🧪 Testing
+##  Testing
 
 The application includes comprehensive testing:
 
@@ -125,7 +130,7 @@ rails test test/models/
 rails test test/controllers/
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 ### Environment Variables
 Create a `.env` file for environment-specific configurations:
@@ -138,7 +143,7 @@ DATABASE_URL=your_database_url_here
 ### Image Upload
 Configure CarrierWave settings in `config/initializers/carrierwave.rb` for different storage options (local, AWS S3, etc.).
 
-## 📚 API Documentation
+##  API Documentation
 
 The application provides JSON API endpoints:
 
@@ -148,7 +153,7 @@ The application provides JSON API endpoints:
 - `PUT /products/:id.json` - Update product (owner only)
 - `DELETE /products/:id.json` - Delete product (owner only)
 
-## 🤝 Contributing
+##  Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -156,11 +161,11 @@ The application provides JSON API endpoints:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+##  Support
 
 If you encounter any issues or have questions:
 
@@ -168,7 +173,7 @@ If you encounter any issues or have questions:
 2. Create a new issue with detailed information
 3. Include error messages, screenshots, and steps to reproduce
 
-## 🎯 Roadmap
+##  Roadmap
 
 Future enhancements planned:
 - [ ] Payment integration (Stripe/PayPal)
@@ -179,10 +184,10 @@ Future enhancements planned:
 - [ ] Admin dashboard
 - [ ] Multi-vendor support
 
-## 📊 Status
+##  Status
 
-✅ **Production Ready** - All core features implemented and tested
+ **Production Ready** - All core features implemented and tested
 
 ---
 
-Built with ❤️ using Ruby on Rails
+Built with  using Ruby on Rails
